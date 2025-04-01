@@ -62,10 +62,15 @@ ImU32 getColorValue(const std::unordered_map<char, ImU32>& map, char code) {
 }
 
 // Parse message into segments with color
-std::vector<ParsedText> parseMessage(const std::string& message) {
+std::vector<ParsedText> parseMessage(const std::string& message, bool isError = false) {
     std::vector<ParsedText> parsedText;
     ImU32 currentColor = IM_COL32(255, 255, 255, 255); // Default color: white
     std::string currentSegment;
+
+    // Apply red color for error messages
+    if (isError) {
+        currentColor = IM_COL32(255, 85, 85, 255); // Red for errors
+    }
 
     for (size_t i = 0; i < message.length(); ++i) {
         if (message[i] == '§') {
@@ -84,15 +89,18 @@ std::vector<ParsedText> parseMessage(const std::string& message) {
                 if (it != colorMap.end()) {
                     currentColor = it->second;
                     i++; // Skip the color code character
-                } else {
+                }
+                else {
                     currentSegment += '§';
                     currentSegment += message[i + 1];
                     i++;
                 }
-            } else {
+            }
+            else {
                 currentSegment += '§';
             }
-        } else {
+        }
+        else {
             currentSegment += message[i];
         }
     }
@@ -107,17 +115,16 @@ std::vector<ParsedText> parseMessage(const std::string& message) {
     return parsedText;
 }
 
-// Add message to the chat
-void Chat::addMessage(std::string message) {
+// Add message to the chat with fading effect
+void Chat::addMessage(std::string message, bool isError = false) {
     ChatMessage chatMessage;
     chatMessage.mText = message;
     chatMessage.mLifeTime = mMaxLifeTime.as<float>();
     chatMessage.mTime = std::chrono::system_clock::now();
     chatMessage.mPercent = 0.f;
+    chatMessage.isError = isError;  // Mark error messages
     mMessages.push_back(chatMessage);
 };
-
-// Additional classes and methods...
 
 // GuiData class for chat window animation
 class GuiData {
@@ -136,7 +143,21 @@ private:
 };
 
 void GuiData::animateChatOpening(float deltaTime) {
-    // Chat animation logic...
+    // Chat opening animation
+    if (chatOpened) {
+        chatHeight += deltaTime * 200;  // Increase height over time
+        if (chatHeight > 300) chatHeight = 300;  // Max height
+    }
+    else {
+        chatHeight -= deltaTime * 200;  // Decrease height
+        if (chatHeight < 0) chatHeight = 0;
+    }
+
+    // Smooth fading in of messages
+    for (auto& msg : chatMessages) {
+        float alpha = std::min(1.0f, msg.mPercent + deltaTime * 0.5f); // Fade in effect
+        msg.mPercent = alpha;
+    }
 }
 
 void GuiData::toggleChat() {
@@ -145,4 +166,24 @@ void GuiData::toggleChat() {
 
 void GuiData::displayClientMessage(const std::string& msg) {
     chatMessages.push_back(msg);
+}
+
+// Render background with transparency
+void Chat::renderBackground() {
+    ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.1f, 0.1f, 0.8f); // Transparent background
+    ImGui::BeginChild("ChatBackground", ImVec2(0, chatHeight), false);
+    ImGui::EndChild();
+}
+
+// Render chat messages with fading
+void Chat::renderMessages() {
+    for (auto& msg : mMessages) {
+        if (msg.isError) {
+            ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 85, 85, 255)); // Red for error messages
+        }
+        ImGui::TextColored(ImVec4(msg.mPercent, msg.mPercent, msg.mPercent, 1.0f), "%s", msg.mText.c_str());
+        if (msg.isError) {
+            ImGui::PopStyleColor();
+        }
+    }
 }
