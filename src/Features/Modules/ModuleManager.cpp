@@ -5,6 +5,7 @@
 #include <build_info.h>
 #include <Features/Modules/ModuleManager.hpp>
 #include <Utils/OAuthUtils.hpp>
+#include <Module.hpp>
 
 #include "Combat/Aura.hpp"
 #include "Combat/AutoClicker.hpp"
@@ -12,254 +13,208 @@
 #include "Combat/InfiniteAura.hpp"
 #include "Combat/Reach.hpp"
 #include "Combat/TriggerBot.hpp"
+#include "Combat/AimAssist.hpp"
+#include "Combat/AntiBot.hpp"
+#include "Combat/AutoPot.hpp"
+#include "Combat/Regen.hpp"
+#include "Combat/TargetStrafe.hpp"
+#include "Combat/Velocity.hpp"
+#include "Combat/Teams.hpp"
 
-#include "Misc/AntiBot.hpp"
-#include "Misc/Anticheat.hpp"
-#include "Misc/AntiCheatDetector.hpp"
-#include "Misc/AutoAccept.hpp"
-#include "Misc/AutoCosmetic.hpp"
-#include "Misc/AutoDodge.hpp"
-#include "Misc/AutoLootbox.hpp"
-#include "Misc/AutoMessage.hpp"
-#include "Misc/AutoQueue.hpp"
-#include "Misc/AutoReport.hpp"
-#include "Misc/AutoSnipe.hpp"
-#include "Misc/AutoVote.hpp"
-#include "Misc/CostumeSpammer.hpp"
-#include "Misc/Desync.hpp"
-#include "Misc/DeviceSpoof.hpp"
-#include "Misc/Disabler.hpp"
-#include "Misc/EditionFaker.hpp"
-#include "Misc/Friends.hpp"
-#include "Misc/IRC.hpp"
-#include "Misc/KickSounds.hpp"
-#include "Misc/Killsults.hpp"
-#include "Misc/NetSkip.hpp"
-#include "Misc/NoFilter.hpp"
-#include "Misc/NoPacket.hpp"
-#include "Misc/PacketLogger.hpp"
-#include "Misc/PartySpammer.hpp"
-#include "Misc/SkinBlinker.hpp"
-#include "Misc/SkinStealer.hpp"
-#include "Misc/Spammer.hpp"
-#include "Misc/StaffAlert.hpp"
-#include "Misc/TestModule.hpp"
-#include "Misc/ToggleSounds.hpp"
-#include "Misc/VoiceChat.hpp"
+#include "Other/AutoAccept.hpp"
+#include "Other/AutoHive.hpp"
+#include "Other/AutoQueue.hpp"
+#include "Other/AutoVote.hpp"
+#include "Other/Breaker.hpp"
+#include "Other/Desync.hpp"
+#include "Other/DeviceSpoof.hpp"
+#include "Other/Disabler.hpp"
+#include "Other/Friends.hpp"
+#include "Other/KickSounds.hpp"
+#include "Other/Killsults.hpp"
+#include "Other/MCF.hpp"
+#include "Other/MCP.hpp"
+#include "Other/NetSkip.hpp"
+#include "Other/NoFilter.hpp"
+#include "Other/NoPacket.hpp"
+#include "Other/Spammer.hpp"
+#include "Other/StaffAlert.hpp"
 
-#include "Movement/AirJump.hpp"
-#include "Movement/AirSpeed.hpp"
 #include "Movement/AntiImmobile.hpp"
-#include "Movement/AutoPath.hpp"
-#include "Movement/DamageBoost.hpp"
-#include "Movement/DebugFly.hpp"
 #include "Movement/FastStop.hpp"
 #include "Movement/Fly.hpp"
-#include "Movement/HiveFly.hpp"
-#include "Movement/InventoryMove.hpp"
+#include "Movement/InvMove.hpp"
 #include "Movement/Jesus.hpp"
-#include "Movement/Jetpack.hpp"
 #include "Movement/LongJump.hpp"
-#include "Movement/NoJumpDelay.hpp"
-#include "Movement/NoSlowDown.hpp"
 #include "Movement/Phase.hpp"
-#include "Movement/ReverseStep.hpp"
 #include "Movement/SafeWalk.hpp"
-#include "Movement/ServerSneak.hpp"
 #include "Movement/Speed.hpp"
 #include "Movement/Spider.hpp"
 #include "Movement/Sprint.hpp"
 #include "Movement/Step.hpp"
-#include "Movement/TargetStrafe.hpp"
-#include "Movement/Velocity.hpp"
+#include "Movement/NoSlow.hpp"
 
 #include "Player/AntiVoid.hpp"
 #include "Player/AutoBoombox.hpp"
-#include "Player/AutoKick.hpp"
-#include "Player/AutoSpellBook.hpp"
 #include "Player/AutoTool.hpp"
 #include "Player/ChestAura.hpp"
-#include "Player/ChestStealer.hpp"
-#include "Player/ClickTp.hpp"
+#include "Player/Stealer.hpp"
 #include "Player/Derp.hpp"
 #include "Player/Extinguisher.hpp"
 #include "Player/FastMine.hpp"
 #include "Player/Freecam.hpp"
-#include "Player/InvManager.hpp"
-#include "Player/MidclickAction.hpp"
+#include "Player/Manager.hpp"
 #include "Player/NoFall.hpp"
 #include "Player/NoRotate.hpp"
 #include "Player/Nuker.hpp"
-#include "Player/OreMiner.hpp"
-#include "Player/Regen.hpp"
-#include "Player/RegenRecode.hpp"
+#include "Player/OreBreaker.hpp"
 #include "Player/Scaffold.hpp"
-#include "Player/Teams.hpp"
 #include "Player/Timer.hpp"
 #include "Player/FastEat.hpp"
 
 #include "spdlog/spdlog.h"
 
-#include "Visual/Animations.hpp"
-#include "Visual/Arraylist.hpp"
-#include "Visual/AutoScale.hpp"
-#include "Visual/BlockESP.hpp"
-#include "Visual/BoneEsp.hpp"
-#include "Visual/ChinaHat.hpp"
-#include "Visual/ClickGui.hpp"
-#include "Visual/CustomChat.hpp"
-#include "Visual/DestroyProgress.hpp"
-#include "Visual/ESP.hpp"
-#include "Visual/Freelook.hpp"
-#include "Visual/FullBright.hpp"
-#include "Visual/Glint.hpp"
-#include "Visual/Goofy.hpp"
-#include "Visual/HudEditor.hpp"
-#include "Visual/Interface.hpp"
-#include "Visual/ItemESP.hpp"
-#include "Visual/ItemPhysics.hpp"
-#include "Visual/JumpCircles.hpp"
-#include "Visual/Keystrokes.hpp"
-#include "Visual/LevelInfo.hpp"
-#include "Visual/MotionBlur.hpp"
-#include "Visual/NameProtect.hpp"
-#include "Visual/Nametags.hpp"
-#include "Visual/NoCameraClip.hpp"
-#include "Visual/NoDebuff.hpp"
-#include "Visual/NoHurtcam.hpp"
-#include "Visual/NoRender.hpp"
-#include "Visual/Notifications.hpp"
-#include "Visual/RobloxCamera.hpp"
-#include "Visual/SessionInfo.hpp"
-#include "Visual/TargetHUD.hpp"
-#include "Visual/Tracers.hpp"
-#include "Visual/UpdateForm.hpp"
-#include "Visual/ViewModel.hpp"
-#include "Visual/Watermark.hpp"
-#include "Visual/Zoom.hpp"
+#include "Render/Ambience.hpp"
+#include "Render/Animations.hpp"
+#include "Render/Arraylist.hpp"
+#include "Render/AutoScale.hpp"
+#include "Render/BabyBoy.hpp"
+#include "Render/BlockESP.hpp"
+#include "Render/CameraClip.hpp"
+#include "Render/ClickGui.hpp"
+#include "Render/Chat.hpp"
+#include "Render/Counters.hpp"
+#include "Render/ESP.hpp"
+#include "Render/FullBright.hpp"
+#include "Render/Glint.hpp"
+#include "Render/HitEffects.hpp"
+#include "Render/HPBar.hpp"
+#include "Render/HudEditor.hpp"
+#include "Render/Interface.hpp"
+#include "Render/ItemESP.hpp"
+#include "Render/ItemPhysics.hpp"
+#include "Render/Keystrokes.hpp"
+#include "Render/LevelInfo.hpp"
+#include "Render/MotionBlur.hpp"
+#include "Render/NameProtect.hpp"
+#include "Render/Nametags.hpp"
+#include "Render/NoDebuff.hpp"
+#include "Render/NoHurtcam.hpp"
+#include "Render/NoRender.hpp"
+#include "Render/Notifications.hpp"
+#include "Render/RobloxCamera.hpp"
+#include "Render/SessionInfo.hpp"
+#include "Render/TargetHUD.hpp"
+#include "Render/ViewModel.hpp"
+#include "Render/Watermark.hpp"
+#include "Render/Zoom.hpp"
+#include "Render/Statistics.hpp"
+#include "Render/PlayerList.hpp"
 
 void ModuleManager::init()
 {
-    // Visual (must be initialized first)
+    // Render (must be initialized first)
     mModules.emplace_back(std::make_shared<HudEditor>());
 
     // Combat
     mModules.emplace_back(std::make_shared<Aura>());
+    mModules.emplace_back(std::make_shared<AimAssist>());
+    mModules.emplace_back(std::make_shared<AntiBot>());
+    mModules.emplace_back(std::make_shared<AutoPot>());
     mModules.emplace_back(std::make_shared<TriggerBot>());
     mModules.emplace_back(std::make_shared<AutoClicker>());
     mModules.emplace_back(std::make_shared<Reach>());
     mModules.emplace_back(std::make_shared<Criticals>());
     mModules.emplace_back(std::make_shared<InfiniteAura>());
+    mModules.emplace_back(std::make_shared<Regen>());
+    mModules.emplace_back(std::make_shared<TargetStrafe>());
+    mModules.emplace_back(std::make_shared<Teams>());
+    mModules.emplace_back(std::make_shared<Velocity>());
 
 
     // Movement
     mModules.emplace_back(std::make_shared<Fly>());
     mModules.emplace_back(std::make_shared<Velocity>());
-    mModules.emplace_back(std::make_shared<NoSlowDown>());
+    mModules.emplace_back(std::make_shared<NoSlow>());
     mModules.emplace_back(std::make_shared<AntiImmobile>());
     mModules.emplace_back(std::make_shared<Sprint>());
     mModules.emplace_back(std::make_shared<Speed>());
-    mModules.emplace_back(std::make_shared<InventoryMove>());
+    mModules.emplace_back(std::make_shared<InvMove>());
     mModules.emplace_back(std::make_shared<SafeWalk>());
-    mModules.emplace_back(std::make_shared<NoJumpDelay>());
     mModules.emplace_back(std::make_shared<Phase>());
     mModules.emplace_back(std::make_shared<FastStop>());
     mModules.emplace_back(std::make_shared<Step>());
     mModules.emplace_back(std::make_shared<LongJump>());
-    mModules.emplace_back(std::make_shared<Spider>());
-    mModules.emplace_back(std::make_shared<ServerSneak>());
-    mModules.emplace_back(std::make_shared<AirJump>());
     mModules.emplace_back(std::make_shared<TargetStrafe>());
     mModules.emplace_back(std::make_shared<Jesus>());
-    mModules.emplace_back(std::make_shared<AirSpeed>());
-    mModules.emplace_back(std::make_shared<ReverseStep>());
-    mModules.emplace_back(std::make_shared<Jetpack>());
-    mModules.emplace_back(std::make_shared<DamageBoost>());
+
 
     // Player
-    mModules.emplace_back(std::make_shared<AutoSpellBook>());
     mModules.emplace_back(std::make_shared<Timer>());
-    mModules.emplace_back(std::make_shared<ChestStealer>());
-    mModules.emplace_back(std::make_shared<InvManager>());
-    mModules.emplace_back(std::make_shared<Regen>());
-/*#ifdef __DEBUG__
-    mModules.emplace_back(std::make_shared<RegenRecode>());
-#endif*/
+    mModules.emplace_back(std::make_shared<Stealer>());
+    mModules.emplace_back(std::make_shared<Manager>());
     mModules.emplace_back(std::make_shared<Scaffold>());
     mModules.emplace_back(std::make_shared<Nuker>());
-    mModules.emplace_back(std::make_shared<OreMiner>());
+    mModules.emplace_back(std::make_shared<OreBreaker>());
     mModules.emplace_back(std::make_shared<AutoBoombox>());
     mModules.emplace_back(std::make_shared<AutoTool>());
-    mModules.emplace_back(std::make_shared<MidclickAction>());
     mModules.emplace_back(std::make_shared<Derp>());
     mModules.emplace_back(std::make_shared<Freecam>());
     mModules.emplace_back(std::make_shared<NoFall>());
-    mModules.emplace_back(std::make_shared<Teams>());
     mModules.emplace_back(std::make_shared<AntiVoid>());
     mModules.emplace_back(std::make_shared<Extinguisher>());
     mModules.emplace_back(std::make_shared<FastMine>());
-    mModules.emplace_back(std::make_shared<ClickTp>());
     mModules.emplace_back(std::make_shared<ChestAura>());
     mModules.emplace_back(std::make_shared<NoRotate>());
     mModules.emplace_back(std::make_shared<FastEat>());
 
-    // Misc
+    // Other
+    mModules.emplace_back(std::make_shared<AutoHive>());
+    mModules.emplace_back(std::make_shared<Breaker>());
+    mModules.emplace_back(std::make_shared<Desync>());
+    mModules.emplace_back(std::make_shared<MCF>());
+    mModules.emplace_back(std::make_shared<MCP>());
     mModules.emplace_back(std::make_shared<ToggleSounds>());
-    mModules.emplace_back(std::make_shared<PacketLogger>());
     mModules.emplace_back(std::make_shared<DeviceSpoof>());
     mModules.emplace_back(std::make_shared<EditionFaker>());
     mModules.emplace_back(std::make_shared<KickSounds>());
     mModules.emplace_back(std::make_shared<AutoQueue>());
-    mModules.emplace_back(std::make_shared<AntiBot>());
-    mModules.emplace_back(std::make_shared<AntiCheatDetector>());
     mModules.emplace_back(std::make_shared<Friends>());
     mModules.emplace_back(std::make_shared<NoPacket>());
     mModules.emplace_back(std::make_shared<NoFilter>());
-    mModules.emplace_back(std::make_shared<AutoMessage>());
     mModules.emplace_back(std::make_shared<Killsults>());
     mModules.emplace_back(std::make_shared<NetSkip>());
     mModules.emplace_back(std::make_shared<Disabler>());
     mModules.emplace_back(std::make_shared<AutoReport>());
     mModules.emplace_back(std::make_shared<StaffAlert>());
-    mModules.emplace_back(std::make_shared<AutoCosmetic>());
     mModules.emplace_back(std::make_shared<AutoAccept>());
-    mModules.emplace_back(std::make_shared<PartySpammer>());
     mModules.emplace_back(std::make_shared<Spammer>());
-    mModules.emplace_back(std::make_shared<IRC>());
-    mModules.emplace_back(std::make_shared<SkinStealer>());
-    mModules.emplace_back(std::make_shared<AutoLootbox>());
-    mModules.emplace_back(std::make_shared<AutoDodge>());
-    mModules.emplace_back(std::make_shared<AutoSnipe>());
     mModules.emplace_back(std::make_shared<AutoVote>());
-    mModules.emplace_back(std::make_shared<CostumeSpammer>());
-    mModules.emplace_back(std::make_shared<TestModule>());
 
 
-    // Visual
+    // Render
+    mModules.emplace_back(std::make_shared<Ambience>());
+    mModules.emplace_back(std::make_shared<BabyBoy>());
     mModules.emplace_back(std::make_shared<Watermark>());
     mModules.emplace_back(std::make_shared<ClickGui>());
     mModules.emplace_back(std::make_shared<AutoScale>());
     mModules.emplace_back(std::make_shared<Interface>());
     mModules.emplace_back(std::make_shared<Arraylist>());
-    mModules.emplace_back(std::make_shared<LevelInfo>());
     mModules.emplace_back(std::make_shared<Notifications>());
     mModules.emplace_back(std::make_shared<DestroyProgress>());
     mModules.emplace_back(std::make_shared<ESP>());
     mModules.emplace_back(std::make_shared<BlockESP>());
     mModules.emplace_back(std::make_shared<MotionBlur>());
     mModules.emplace_back(std::make_shared<Animations>());
-    mModules.emplace_back(std::make_shared<NoCameraClip>());
-    mModules.emplace_back(std::make_shared<RobloxCamera>());
-    mModules.emplace_back(std::make_shared<TargetHUD>());
+    mModules.emplace_back(std::make_shared<CameraClip>());
+    mModules.emplace_back(std::make_shared<Counters>());
+    mModules.emplace_back(std::make_shared<TargetInfo>());
     mModules.emplace_back(std::make_shared<ItemESP>());
     mModules.emplace_back(std::make_shared<Nametags>());
     mModules.emplace_back(std::make_shared<NoHurtcam>());
     mModules.emplace_back(std::make_shared<FullBright>());
     mModules.emplace_back(std::make_shared<Keystrokes>());
     mModules.emplace_back(std::make_shared<ViewModel>());
-    mModules.emplace_back(std::make_shared<SessionInfo>());
-    mModules.emplace_back(std::make_shared<Tracers>());
-    mModules.emplace_back(std::make_shared<ChinaHat>());
     mModules.emplace_back(std::make_shared<NameProtect>());
     mModules.emplace_back(std::make_shared<Zoom>());
     mModules.emplace_back(std::make_shared<Glint>());
@@ -267,62 +222,14 @@ void ModuleManager::init()
     mModules.emplace_back(std::make_shared<JumpCircles>());
     mModules.emplace_back(std::make_shared<Freelook>());
     mModules.emplace_back(std::make_shared<NoRender>());
+    mModules.emplace_back(std::make_shared<Chat>());
+    mModules.emplace_back(std::make_shared<HitEffects>());
+    mModules.emplace_back(std::make_shared<HPBar>());
+    mModules.emplace_back(std::make_shared<HudEditor>());
+    mModules.emplace_back(std::make_shared<ItemPhysics>());
+    mModules.emplace_back(std::make_shared<Statistics>());
+    mModules.emplace_back(std::make_shared<PlayerList>());
 
-
-#ifdef __PRIVATE_BUILD__
-    // mModules.emplace_back(std::make_shared<HiveFly>()); // Flareon V2 boombox fly
-    // mModules.emplace_back(std::make_shared<DebugFly>()); // Real Sigma fly for Flareon V1 and the latest one
-    mModules.emplace_back(std::make_shared<Desync>()); // needs troubleshooting
-    mModules.emplace_back(std::make_shared<SkinBlinker>());
-    mModules.emplace_back(std::make_shared<Anticheat>()); // Private for now cuz its not really good
-
-    // TODO: Finish these modules
-#endif
-
-    // Development only
-#ifdef __DEBUG__
-    mModules.emplace_back(std::make_shared<AutoPath>());
-
-    mModules.emplace_back(std::make_shared<AutoKick>()); // LMAO
-
-    //mModules.emplace_back(std::make_shared<ItemPhysics>());
-    mModules.emplace_back(std::make_shared<VoiceChat>());
-    mModules.emplace_back(std::make_shared<BoneEsp>());
-    mModules.emplace_back(std::make_shared<CustomChat>());
-    mModules.emplace_back(std::make_shared<Goofy>()); // Experimental Shit DO NOT TOUCH :PPP
-
-#endif
-
-    // Determine if we should add UpdateForm
-    std::string oldHash = OAuthUtils::getLastCommitHash();
-    std::string latestHash = SOLSTICE_BUILD_VERSION;
-    if (oldHash != latestHash && oldHash != "")
-    {
-        spdlog::info("Adding UpdateForm module, oldHash: {}, latestHash: {}", oldHash, latestHash);
-        mModules.emplace_back(std::make_shared<UpdateForm>());
-    } else
-    {
-        spdlog::info("Not adding UpdateForm module, oldHash: {}, latestHash: {}", oldHash, latestHash);
-    }
-
-    for (auto& module : mModules)
-    {
-        try
-        {
-            module->onInit();
-        } catch (const std::exception& e)
-        {
-            spdlog::error("Failed to initialize module {}: {}", module->mName, e.what());
-        } catch (const nlohmann::json::exception& e)
-
-        {
-            spdlog::error("Failed to initialize module {}: {}", module->mName, e.what());
-        } catch (...)
-        {
-            spdlog::error("Failed to initialize module {}: unknown", module->mName);
-        }
-    }
-}
 
 void ModuleManager::shutdown()
 {
